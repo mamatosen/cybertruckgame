@@ -7,8 +7,9 @@ public class VehicleControl : MonoBehaviour
 {
     Rigidbody2D rb;
 
-    public float forwAcc, forwMaxVel, backwAcc, backwMaxVel, rotationAcc;
+    public float forwAcc, forwMaxVel, backwAcc, backwMaxVel, rotationAcc, baseZoom, maxZoom, zoomSpeed = 1;
     public SetAnimations carAnimations;
+    public Camera cam;
 
     public void ClampSpeed() {
         rb.velocity = new Vector2(
@@ -51,6 +52,7 @@ public class VehicleControl : MonoBehaviour
     private void Update()
     {
         CheckSpeed();
+        ChangeZoom();
     }
 
     private void CheckSpeed()
@@ -65,5 +67,20 @@ public class VehicleControl : MonoBehaviour
         {
             carAnimations.SetIdle();
         }
+    }
+
+    private void ChangeZoom()
+    {
+        float mag = rb.velocity.magnitude;
+        if(mag > 5)
+        {
+            cam.orthographicSize += Time.deltaTime * zoomSpeed * mag;
+        }
+        else
+        {
+            cam.orthographicSize -= Time.deltaTime * zoomSpeed;
+        }
+
+        cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, baseZoom, maxZoom);
     }
 }

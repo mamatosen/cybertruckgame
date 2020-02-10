@@ -4,15 +4,10 @@ using UnityEngine;
 
 public class AutoDestroy : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public float time = 1f;
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        Destroy(gameObject, time);
     }
 }
