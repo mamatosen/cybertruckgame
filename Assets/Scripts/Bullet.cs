@@ -19,10 +19,10 @@ public class Bullet : MonoBehaviour
         shaker = Camera.main.GetComponent<CameraShake>();
     }
 
-    public void Shoot(Vector2 dir)
+    public void Shoot(Vector2 dir, Vector2 initSpeed)
     {
         transform.right = dir.normalized;
-        rb.velocity = dir.normalized * speed;
+        rb.velocity = dir.normalized * speed + initSpeed;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

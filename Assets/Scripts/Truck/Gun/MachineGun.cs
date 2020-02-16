@@ -10,11 +10,12 @@ public class MachineGun : MonoBehaviour
 
     public Animator animator;
     public GameObject bulletPrefab;
-    public Transform gunHole, trash;
+    public Transform gunHole, trash, par;
     public LineRenderer lineRenderer;
     public Light gunlight;
     public float angleRange = 60, timeBetweenBullets = 0.2f;
     public AudioSource audioSource;
+    public Rigidbody2D rb;
 
     // private
 
@@ -48,13 +49,17 @@ public class MachineGun : MonoBehaviour
     private void ClampAngle()
     {
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        if(angle > angleRange)
+
+        float upperRange = angleRange + par.rotation.eulerAngles.z;
+        float lowerRange = -angleRange + par.rotation.eulerAngles.z;
+
+        if(angle > upperRange)
         {
-            dir = new Vector2(Mathf.Cos(angleRange * Mathf.Deg2Rad), Mathf.Sin(angleRange * Mathf.Deg2Rad));
+            dir = new Vector2(Mathf.Cos(upperRange * Mathf.Deg2Rad), Mathf.Sin(upperRange * Mathf.Deg2Rad));
         }
-        else if(angle < -angleRange)
+        else if(angle < lowerRange)
         {
-            dir = new Vector2(Mathf.Cos(-angleRange * Mathf.Deg2Rad), Mathf.Sin(-angleRange * Mathf.Deg2Rad));
+            dir = new Vector2(Mathf.Cos(lowerRange * Mathf.Deg2Rad), Mathf.Sin(lowerRange * Mathf.Deg2Rad));
         }
     }
 
@@ -94,7 +99,9 @@ public class MachineGun : MonoBehaviour
         {
             time = 0;
             GameObject bullet = Instantiate(bulletPrefab, gunHole.position, Quaternion.identity, trash);
-            bullet.GetComponent<Bullet>().Shoot(dir + new Vector2((Random.value - 0.5f) * 0.02f, (Random.value - 0.5f) * 0.02f));
+            Vector2 vel = rb.velocity;
+            if (vel.x < 0) vel.x = 0;
+            bullet.GetComponent<Bullet>().Shoot(dir + new Vector2((Random.value - 0.5f) * 0.02f, (Random.value - 0.5f) * 0.02f), vel);
         }
     }
 
